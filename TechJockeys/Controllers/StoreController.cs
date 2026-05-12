@@ -23,7 +23,7 @@ namespace TechJockeys.Controllers
         public IActionResult ByCategory(int id)
         {
             // error handle if id missing => redirect to Store index so user can choose a category
-            if (id == 0)
+            if (id == 0 || id > 15)
             {
                 return RedirectToAction("Index");
             }
