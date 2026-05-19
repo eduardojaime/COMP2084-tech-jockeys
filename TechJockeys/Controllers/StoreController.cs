@@ -31,7 +31,7 @@ namespace TechJockeys.Controllers
             // use id param to find category
             // use ViewData dictionary to show selected category name in heading
             ViewData["Category"] = "Category " + id.ToString();
-
+      
             return View();
         }
     }

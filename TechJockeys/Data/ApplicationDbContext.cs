@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TechJockeys.Models;
 
 namespace TechJockeys.Data
 {
@@ -9,5 +10,6 @@ namespace TechJockeys.Data
             : base(options)
         {
         }
+        public DbSet<TechJockeys.Models.Category> Category { get; set; } = default!;
     }
 }
