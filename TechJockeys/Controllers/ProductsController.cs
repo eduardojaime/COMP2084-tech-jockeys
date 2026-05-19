@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TechJockeys.Models;
 
 namespace TechJockeys.Controllers
 {
@@ -6,7 +7,10 @@ namespace TechJockeys.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            // product list to pass for display in view
+            var products = new List<Product>();
+
+            return View(products);
         }
 
         public IActionResult Create()
