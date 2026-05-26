@@ -52,5 +52,25 @@ namespace TechJockeys.Controllers
         {
             return View();
         }
+
+        // GET: /Categories/Delete/5 => delete selected category
+        public IActionResult Delete(int id)
+        {
+            // find Category to delete
+            var category = _context.Category.Find(id);
+
+            if (category == null)
+            {
+                // return RedirectToAction("Index");
+                return NotFound();
+            }
+
+            // delete from db
+            _context.Category.Remove(category);
+            _context.SaveChanges();
+
+            // refresh list
+            return RedirectToAction("Index");
+        }
     }
 }
