@@ -77,7 +77,7 @@ namespace TechJockeys.Controllers
 
         // POST: /Products/Edit/5 => update product from form values
         [HttpPost]
-        public IActionResult Edit([Bind("ProductId,Name,Price,Stock,Description,Image,CategoryId")] Product product)
+        public IActionResult Edit([Bind("ProductId,Name,Price,Stock,Description,CategoryId")] Product product, IFormFile? Image)
         {
             // input validation
             if (!ModelState.IsValid)
@@ -112,6 +112,28 @@ namespace TechJockeys.Controllers
 
             // refresh list on index
             return RedirectToAction("Index");
+        }
+
+        private static string UploadImage(IFormFile Image)
+        {
+            // get temp location of uploaded image
+            var filePath = Path.GetTempFileName();
+
+            // create unique name to prevent overwriting using Globally Unique Identifier (GUID)
+            // e.g. product.jpg => 29387rjlf398dsjf-product.jpg
+            var fileName = Guid.NewGuid().ToString() + "-" + Image.FileName;
+
+            // set destination path dynamically so it works locally and in production
+            var uploadPath = System.IO.Directory.GetCurrentDirectory() + "\\wwwroot\\img\\" + fileName; 
+
+            // use filestream to copy image from temp folder to img folder
+            using (var stream = new FileStream(uploadPath, FileMode.Create))
+            {
+                Image.CopyTo(stream);
+            }
+
+            // return new unique file name for saving to db
+            return fileName;
         }
     }
 }

@@ -24,6 +24,7 @@ body {
     font-family: "Manrope", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+    color: #212121;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -34,3 +35,23 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.navbar-dark {
+    background-color: #455A64;
+}
+
+footer {
+    background-color: #CFD8DC;
+}
+
+a, a:visited {
+    color: #4CAF50;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+}
+
+    .btn-primary:hover {
+        background-color: #5FDE64;
+    }
