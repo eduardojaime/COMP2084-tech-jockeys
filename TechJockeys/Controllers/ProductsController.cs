@@ -77,7 +77,7 @@ namespace TechJockeys.Controllers
 
         // POST: /Products/Edit/5 => update product from form values
         [HttpPost]
-        public IActionResult Edit([Bind("ProductId,Name,Price,Stock,Description,CategoryId")] Product product, IFormFile? Image)
+        public IActionResult Edit([Bind("ProductId,Name,Price,Stock,Description,CategoryId")] Product product, IFormFile? Image, string? CurrentImage)
         {
             // input validation
             if (!ModelState.IsValid)
@@ -86,8 +86,19 @@ namespace TechJockeys.Controllers
                 return View(product);
             }
 
-            // data valid => save to db
-            _context.Product.Update(product);
+            // upload image if any
+            if (Image != null)
+            {
+                var fileName = UploadImage(Image);
+                product.Image = fileName; // include unique image name into product before saving
+            }
+            else
+            {
+                product.Image = CurrentImage;  // keep current image if no new upload
+            }
+
+                // data valid => save to db
+                _context.Product.Update(product);
             _context.SaveChanges();
 
             // refresh index list
