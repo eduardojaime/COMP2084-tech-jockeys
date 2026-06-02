@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TechJockeys.Data;
 using TechJockeys.Models;
 
@@ -19,7 +20,12 @@ namespace TechJockeys.Controllers
         public IActionResult Index()
         {
             // product list to pass for display in view
-            var products = _context.Product.ToList();
+            // join to parent Category so we can include Category Name
+            // sort a-z by Product name
+            var products = _context.Product
+                .Include(p => p.Category)
+                .OrderBy(p => p.Name)
+                .ToList();
 
             return View(products);
         }
