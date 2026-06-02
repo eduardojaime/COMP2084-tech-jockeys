@@ -50,9 +50,62 @@ namespace TechJockeys.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit()
+        // GET: /Products/Edit/5 => show populated product form
+        public IActionResult Edit(int id)
         {
-            return View();
+            // find product by id
+            var product = _context.Product.Find(id);
+
+            // if not found => error
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // fetch Categories for dropdown, ordered a-z by Name
+            ViewBag.CategoryId = new SelectList(_context.Category.OrderBy(c => c.Name).ToList(), "CategoryId", "Name");
+
+            // pass product data to view for display
+            return View(product);
+        }
+
+        // POST: /Products/Edit/5 => update product from form values
+        [HttpPost]
+        public IActionResult Edit([Bind("ProductId,Name,Price,Stock,Description,Image,CategoryId")] Product product)
+        {
+            // input validation
+            if (!ModelState.IsValid)
+            {
+                // invalid => reload page w/existing values
+                return View(product);
+            }
+
+            // data valid => save to db
+            _context.Product.Update(product);
+            _context.SaveChanges();
+
+            // refresh index list
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Products/Delete/5 => find & delete selected product
+        public IActionResult Delete(int id)
+        {
+            // find product by id
+            var product = _context.Product.Find(id);
+
+            // if not found => error
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // remove from db
+            _context.Product.Remove(product);
+            _context.SaveChanges();
+
+            // refresh list on index
+            return RedirectToAction("Index");
         }
     }
 }

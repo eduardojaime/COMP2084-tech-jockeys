@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TechJockeys.Data;
 using TechJockeys.Models;
 
@@ -91,6 +92,12 @@ namespace TechJockeys.Controllers
             {
                 // return RedirectToAction("Index");
                 return NotFound();
+            }
+
+            // check for child products
+            if (category.Products == null)
+            {
+                return View("Error");
             }
 
             // delete from db
