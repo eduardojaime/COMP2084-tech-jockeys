@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechJockeys.Data;
@@ -6,6 +7,7 @@ using TechJockeys.Models;
 
 namespace TechJockeys.Controllers
 {
+    [Authorize(Roles = "Administrator")] // administrator access only to product area
     public class ProductsController : Controller
     {
         // shared db obj

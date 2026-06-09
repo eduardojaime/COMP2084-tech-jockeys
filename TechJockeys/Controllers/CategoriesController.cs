@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TechJockeys.Data;
 using TechJockeys.Models;
 
 namespace TechJockeys.Controllers
 {
+    [Authorize(Roles = "Administrator")] // restrict all methods to Administrator role only
     public class CategoriesController : Controller
     {
         // shared db conn available to all controller methods
