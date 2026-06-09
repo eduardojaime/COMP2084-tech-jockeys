@@ -1,20 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TechJockeys.Data;
 using TechJockeys.Models;
 
 namespace TechJockeys.Controllers
 {
     public class StoreController : Controller
     {
+        // shared db conn
+        private readonly ApplicationDbContext _context;
+
+        // constructor w/db conn dependency
+        public StoreController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            // fetch category data (mock data today, from db later)
-            var categories = new List<Category>();
-
-            // create mock category list
-            for (int i = 1; i < 16; i++)
-            {
-                categories.Add(new Category { CategoryId = i, Name = "Category " + i.ToString() });
-            }
+            // fetch category data from db
+            var categories = _context.Category.OrderBy(c => c.Name).ToList();
 
             // load view and pass the category list
             return View(categories);

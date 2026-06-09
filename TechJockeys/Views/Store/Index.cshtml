@@ -6,13 +6,15 @@
 
 <h1>Shop / Build your Custom PC</h1>
 
-<ul>
+<section class="row card-group">
     @foreach (var category in Model)
     {
-        <li>
-            <a asp-action="ByCategory" asp-controller="Store" asp-route-id="@category.CategoryId">
-                @category.Name
-            </a>
-        </li>
+        <article class="col-lg-4 mb-3">
+            <div class="card mb-4 text-center h-100">
+                <a asp-action="ByCategory" asp-controller="Store" asp-route-id="@category.CategoryId">
+                    @category.Name
+                </a>
+            </div>
+        </article>
     }
-</ul>
+</section>
