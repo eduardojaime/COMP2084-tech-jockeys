@@ -15,6 +15,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication()
+    .AddGoogle(
+        options => {
+            options.ClientId = builder.Configuration.GetSection("Authentication:Google")["ClientId"] ?? "";
+            options.ClientSecret = builder.Configuration.GetSection("Authentication:Google")["ClientSecret"] ?? "";
+        }
+    );
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +40,7 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); // enables third-party auth configured above
 app.UseAuthorization();
 
 app.MapStaticAssets();
