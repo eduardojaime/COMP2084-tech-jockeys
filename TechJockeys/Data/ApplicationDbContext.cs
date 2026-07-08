@@ -12,5 +12,6 @@ namespace TechJockeys.Data
         }
         public DbSet<TechJockeys.Models.Category> Category { get; set; } = default!;
         public DbSet<TechJockeys.Models.Product> Product { get; set; } = default!;
+        public DbSet<TechJockeys.Models.CartItem> CartItem { get; set; } = default!;
     }
 }

@@ -54,5 +54,17 @@ namespace TechJockeys.Controllers
       
             return View(products);
         }
+
+        [HttpPost]
+        public IActionResult AddToCart([FromForm] int ProductId, [FromForm] int Quantity) {
+            // TODO: get userId or generate temp id for not-logged in users
+
+            // Get product price
+
+            // Create new cart record
+
+            // Redirect to Cart view to show the user's cart
+            return RedirectToAction("Cart");
+        }
     }
 }
