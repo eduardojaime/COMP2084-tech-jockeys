@@ -127,6 +127,17 @@ namespace TechJockeys.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET /Products/Details/5 => shows details of a product
+        // allow anonymous access
+        [AllowAnonymous]
+        public IActionResult Details(int id)
+        {
+            // find by id
+            var product = _context.Product.Find(id);
+
+            return View(product);
+        }
+
         private static string UploadImage(IFormFile Image)
         {
             // get temp location of uploaded image

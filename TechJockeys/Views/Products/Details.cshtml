@@ -1,0 +1,65 @@
+@model TechJockeys.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Stock)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Stock)
+        </dd>
+    </dl>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (!String.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/img/@Model.Image"
+                     class="img-thumbnail"
+                     style="max-width:250px"
+                     alt="Image of a @Model.Name" />
+            }
+            else
+            {
+                <img src="~/img/placeholder.png"
+                     class="img-thumbnail"
+                     style="max-width:250px"
+                     alt="Placeholder Image" />
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    @* Back to /Store/ByCategory/id *@
+    <a asp-controller="Store" asp-action="ByCategory" asp-route-id="@Model.CategoryId">Back to Category Page</a>
+</div>
