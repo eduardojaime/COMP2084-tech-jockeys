@@ -57,14 +57,53 @@ namespace TechJockeys.Controllers
 
         [HttpPost]
         public IActionResult AddToCart([FromForm] int ProductId, [FromForm] int Quantity) {
-            // TODO: get userId or generate temp id for not-logged in users
+            // get userId or generate temp id for not-logged in users
+            // retrieve from session storage storage
+            var customerId = GetCustomerId();
+
+            // Validate the product ID and quantity
+            if (Quantity <= 0 || ProductId <= 0)
+            {
+                return BadRequest("Invalid quantity or product ID.");
+            }
+            // Validate that the product exists in the DB
+            var product = _context.Product.Find(ProductId);
+            if (product == null)
+            {
+                return NotFound("Invalid product ID.");
+            }
 
             // Get product price
+            var price = product.Price;
 
             // Create new cart record
+            var cartItem = new CartItem
+            {
+                Quantity = Quantity,
+                Price = price,
+                ProductId = ProductId,
+                CustomerId = customerId
+            };
+
+            // Save new cart item to the database
+            _context.CartItem.Add(cartItem); // at this point, the cart item is only in memory not yet
+            _context.SaveChanges(); // this is when the new record is actually saved to the database
 
             // Redirect to Cart view to show the user's cart
             return RedirectToAction("Cart");
+        }
+
+        // Helper Methods
+        /// <summary>
+        /// This method retrieves the customer ID from the session or generates a temporary ID 
+        /// for not-logged-in users
+        /// </summary>
+        /// <returns>
+        /// The customer ID as a string. It can be either a GUID or an email address.
+        /// </returns>
+        private string GetCustomerId()
+        {
+            return "123"; // Placeholder for customer ID retrieval logic
         }
     }
 }
