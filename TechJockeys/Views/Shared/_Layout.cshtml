@@ -23,6 +23,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Store" asp-action="Index">Store</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Store" asp-action="Cart">My Cart</a>
+                        </li>
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TechJockeys.Data;
 using TechJockeys.Models;
 
@@ -43,7 +45,8 @@ namespace TechJockeys.Controllers
             // Retrieve the category name to show on the page in the title
             var category = _context.Category.Find(id);
             // redirect to index if category is null
-            if (category == null) {
+            if (category == null)
+            {
                 return RedirectToAction("index");
             }
 
@@ -51,12 +54,13 @@ namespace TechJockeys.Controllers
             // use ViewData dictionary to show selected category name in heading
             // since category is nullable, question mark '?' will make this value empty on runtime if null
             ViewData["Category"] = category?.Name;
-      
+
             return View(products);
         }
 
         [HttpPost]
-        public IActionResult AddToCart([FromForm] int ProductId, [FromForm] int Quantity) {
+        public IActionResult AddToCart([FromForm] int ProductId, [FromForm] int Quantity)
+        {
             // get userId or generate temp id for not-logged in users
             // retrieve from session storage storage
             var customerId = GetCustomerId();
@@ -93,6 +97,51 @@ namespace TechJockeys.Controllers
             return RedirectToAction("Cart");
         }
 
+        [HttpGet]
+        public IActionResult Cart()
+        {
+            // get user id so we can filter car items
+            var customerId = GetCustomerId();
+            // get cart items associated to that user id
+            var cartItems = _context.CartItem                               // SELECT * FROM CartItem ci
+                                .Include(ci => ci.Product)                  // JOIN Product p ON ci.ProductId = p.ProductId
+                                .Where(ci => ci.CustomerId == customerId)   // WHERE ci.CustomerId = @customerId
+                                .OrderBy(ci => ci.CartItemId)               // ORDER BY ci.CartItemId
+                                .ToList();
+
+            // calculate total price for all items in the cart and pass as viewbag to the view
+            ViewBag.TotalAmount = cartItems.Sum(ci => ci.Price * ci.Quantity);
+
+            // return the view with the cart items model (list)
+            return View(cartItems);
+        }
+
+        [HttpGet]
+        public IActionResult RemoveFromCart(int id)
+        { 
+            // Validate
+            if (id <= 0)
+            {
+                return BadRequest("Invalid cart item ID.");
+            }
+            // find the cart item in the DB
+            var cartItem = _context.CartItem.Find(id);
+
+            // remove it from collection and save changes
+            _context.CartItem.Remove(cartItem);
+            _context.SaveChanges();
+
+            // redirect back to cart view
+            return RedirectToAction("Cart");
+        }
+
+        [HttpGet]
+        [Authorize] // only logged-in users can access checkout
+        public IActionResult Checkout()
+        {
+            return View();
+        }
+
         // Helper Methods
         /// <summary>
         /// This method retrieves the customer ID from the session or generates a temporary ID 
@@ -103,7 +152,27 @@ namespace TechJockeys.Controllers
         /// </returns>
         private string GetCustomerId()
         {
-            return "123"; // Placeholder for customer ID retrieval logic
+            // retrieve customer ID from session storage
+            var customerId = HttpContext.Session.GetString("CustomerId");
+            // handle if it's null or empty (not logged in, first-time visitor)
+            if (string.IsNullOrEmpty(customerId))
+            {
+                // there's nothing in the session yet, so generate or get from user object and store
+                if (User.Identity.IsAuthenticated)
+                {
+                    // user is logged in, use their email as the customer ID
+                    customerId = User.Identity.Name; // this is usually the email address
+                }
+                else
+                {
+                    // user is not logged in, generate a temporary GUID for this session
+                    customerId = Guid.NewGuid().ToString();
+                }
+                // Store whichever value we got in the session for future requests
+                HttpContext.Session.SetString("CustomerId", customerId);
+            }
+
+            return customerId; // Placeholder for customer ID retrieval logic
         }
     }
 }

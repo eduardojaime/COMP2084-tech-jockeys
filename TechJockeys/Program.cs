@@ -23,6 +23,9 @@ builder.Services.AddAuthentication()
         }
     );
 
+// Add session services with default configs
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +45,8 @@ app.UseRouting();
 
 app.UseAuthentication(); // enables third-party auth configured above
 app.UseAuthorization();
+// Enable session middleware in the app object
+app.UseSession();
 
 app.MapStaticAssets();
 
