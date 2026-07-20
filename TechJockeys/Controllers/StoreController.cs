@@ -206,13 +206,43 @@ namespace TechJockeys.Controllers
                 },
                 Mode = "payment",
                 PaymentMethodTypes = new List<string> { "card" },
-                SuccessUrl = domain + "/Shop/SaveOrder",
+                SuccessUrl = domain + "/Store/SaveOrder",
                 CancelUrl = domain + "/Store/Cart"
             };
             var service = new SessionService();
             Session session = service.Create(options);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303); // redirect to Stripe checkout
+        }
+
+        [HttpGet]
+        public IActionResult SaveOrder() {
+            // get the order from session storage
+            var order = HttpContext.Session.GetObject<Order>("Order");
+            // get customer id
+            var customerId = GetCustomerId();
+            // get cart items
+            var cartItems = _context.CartItem
+                .Where(ci => ci.CustomerId == customerId)
+                .ToList();
+            // save order to database
+            _context.Order.Add(order);
+            _context.SaveChanges();
+
+            // for each item in the cart, create an order item record
+            foreach (var cartItem in cartItems) {
+                var orderItem = new OrderItem {
+                    OrderId = order.OrderId,
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity,
+                    Price = cartItem.Price
+                };
+                _context.OrderItem.Add(orderItem);
+                // clear cart one by one
+                _context.CartItem.Remove(cartItem);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Details", "Orders", new { @id = order.OrderId });
         }
 
         // Helper Methods
