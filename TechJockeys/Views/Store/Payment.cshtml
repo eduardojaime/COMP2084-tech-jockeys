@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Comfirm Payment Amount";
+}
+
+<h1>Comfirm Payment Amount</h1>
+
+<h4>Total Amount: @ViewBag.TotalAmount.ToString("C")</h4>
+
+<script src="https://js.stripe.com/dahlia/stripe.js"></script>
+
+<form action="/Store/ProcessPayment" method="POST">
+    <button type="submit" id="checkout-button">Process Payment >></button>
+</form>
